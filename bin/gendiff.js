@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { Command } from "commander";
+import genDiff from "../src/index.js"; // Импортируем нашу библиотеку
 
 const program = new Command();
 
@@ -11,9 +12,9 @@ program
   .arguments("<filepath1> <filepath2>")
   .option("-f, --format [type]", "output format")
   .helpOption("-h, --help", "display help for command")
-  .action((filepath1, filepath2, options) => {
-    // Здесь я позже буду вызывать основную функцию genDiff
-    // console.log(filepath1, filepath2, options.format);
+  .action((filepath1, filepath2) => {
+    // Передаем пути к файлам в главную функцию
+    genDiff(filepath1, filepath2);
   });
 
 program.parse(process.argv);
