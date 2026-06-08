@@ -1,19 +1,25 @@
 import fs from "fs";
 import path from "path";
 import _ from "lodash";
+import parse from "./parsers.js";
+
+const getDataAndFormat = (filePath) => {
+  const absolutePath = path.resolve(process.cwd(), filePath);
+  const data = fs.readFileSync(absolutePath, "utf-8");
+  // path.extname возвращает расширение с точкой (например, '.json'), убираем её через slice(1)
+  const format = path.extname(filePath).slice(1);
+  return { data, format };
+};
 
 const genDiff = (filePath1, filePath2) => {
-  // Получаем абсолютные пути и парсим файлы
-  const absolutePath1 = path.resolve(process.cwd(), filePath1);
-  const absolutePath2 = path.resolve(process.cwd(), filePath2);
+  const file1 = getDataAndFormat(filePath1);
+  const file2 = getDataAndFormat(filePath2);
 
-  const obj1 = JSON.parse(fs.readFileSync(absolutePath1, "utf-8"));
-  const obj2 = JSON.parse(fs.readFileSync(absolutePath2, "utf-8"));
+  const obj1 = parse(file1.data, file1.format);
+  const obj2 = parse(file2.data, file2.format);
 
-  // Получаем упорядоченный массив всех уникальных ключей из обоих объектов
   const keys = _.sortBy(_.union(_.keys(obj1), _.keys(obj2)));
 
-  // Формируем строки для каждого ключа
   const lines = keys.map((key) => {
     if (!_.has(obj2, key)) {
       return `  - ${key}: ${obj1[key]}`;
@@ -27,7 +33,6 @@ const genDiff = (filePath1, filePath2) => {
     return `    ${key}: ${obj1[key]}`;
   });
 
-  // Собираем итоговую строку
   return `{\n${lines.join("\n")}\n}`;
 };
 
