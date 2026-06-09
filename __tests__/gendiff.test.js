@@ -11,13 +11,31 @@ const getFixturePath = (filename) =>
 const readFile = (filename) =>
   fs.readFileSync(getFixturePath(filename), "utf-8").trim();
 
-test("gendiff stylish nested comparison", () => {
-  const expected = readFile("expected_stylish.txt");
+test("gendiff comparisons", () => {
+  const expectedStylish = readFile("expected_stylish.txt");
+  const expectedPlain = readFile("expected_plain.txt");
 
+  // Тесты для stylish (по умолчанию)
   expect(
     genDiff(getFixturePath("file1.json"), getFixturePath("file2.json")).trim(),
-  ).toEqual(expected);
+  ).toEqual(expectedStylish);
   expect(
     genDiff(getFixturePath("file1.yml"), getFixturePath("file2.yaml")).trim(),
-  ).toEqual(expected);
+  ).toEqual(expectedStylish);
+
+  // Тесты для plain
+  expect(
+    genDiff(
+      getFixturePath("file1.json"),
+      getFixturePath("file2.json"),
+      "plain",
+    ).trim(),
+  ).toEqual(expectedPlain);
+  expect(
+    genDiff(
+      getFixturePath("file1.yml"),
+      getFixturePath("file2.yaml"),
+      "plain",
+    ).trim(),
+  ).toEqual(expectedPlain);
 });

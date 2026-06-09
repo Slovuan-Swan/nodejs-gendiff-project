@@ -10,11 +10,10 @@ program
   .description("Compares two configuration files and shows a difference.")
   .version("0.0.1", "-V, --version", "output the version number")
   .arguments("<filepath1> <filepath2>")
-  .option("-f, --format [type]", "output format")
+  .option("-f, --format [type]", "output format", "stylish") // Установили дефолт stylish
   .helpOption("-h, --help", "display help for command")
-  .action((filepath1, filepath2) => {
-    // Выводим полученную строку разностей в консоль
-    const result = genDiff(filepath1, filepath2);
+  .action((filepath1, filepath2, options) => {
+    const result = genDiff(filepath1, filepath2, options.format);
     console.log(result);
   });
 
