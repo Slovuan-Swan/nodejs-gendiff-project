@@ -38,4 +38,13 @@ test("gendiff comparisons", () => {
       "plain",
     ).trim(),
   ).toEqual(expectedPlain);
+
+  // Тест для json
+  const jsonResult = genDiff(
+    getFixturePath("file1.json"),
+    getFixturePath("file2.json"),
+    "json",
+  );
+  // Проверяем, что результат является валидным JSON-объектом
+  expect(() => JSON.parse(jsonResult)).not.toThrow();
 });
